@@ -28,9 +28,9 @@ export const me = () =>
         dispatch(getUser(res.data || defaultUser)))
       .catch(err => console.log(err))
 
-export const auth = (email, password, method) =>
+export const auth = (email, password, method, firstName, lastName, month, day, year) =>
   dispatch =>
-    axios.post(`/auth/${method}`, { email, password })
+    axios.post(`/auth/${method}`, { email, password, firstName, lastName, month, day, year })
       .then(res => {
         dispatch(getUser(res.data))
         history.push('/home')
@@ -45,6 +45,11 @@ export const logout = () =>
         dispatch(removeUser())
         history.push('/login')
       })
+      .catch(err => console.log(err))
+
+export const submitCard = cardDetails =>
+  dispatch =>
+    axios.post(`/api/users/card`, cardDetails)
       .catch(err => console.log(err))
 
 /**

@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
+const { stripe_key } = require('../../secrets')
 module.exports = router
 
 router.post('/login', (req, res, next) => {
@@ -17,16 +18,23 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
-  User.create(req.body)
-    .then(user => {
-      req.login(user, err => (err ? next(err) : res.json(user)))
-    })
-    .catch(err => {
-      if (err.name === 'SequelizeUniqueConstraintError') {
-        res.status(401).send('User already exists')
-      } else {
-        next(err)
-      }
+  const stripe = require('stripe')(stripe_key)
+  return stripe.customers.create({
+    description: `Customer ID for ${req.body.email}`,
+  })
+    .then(customer => {
+      req.body.customerId = customer.id
+      User.create(req.body)
+        .then(user => {
+          req.login(user, err => (err ? next(err) : res.json(user)))
+        })
+        .catch(err => {
+          if (err.name === 'SequelizeUniqueConstraintError') {
+            res.status(401).send('User already exists')
+          } else {
+            next(err)
+          }
+        })
     })
 })
 

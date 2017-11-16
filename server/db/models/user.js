@@ -11,6 +11,29 @@ const User = db.define('user', {
   password: {
     type: Sequelize.STRING
   },
+  firstName: {
+    type: Sequelize.STRING
+  },
+  lastName: {
+    type: Sequelize.STRING
+  },
+  passcode: {
+    type: Sequelize.STRING
+  },
+  customerId: {
+    type: Sequelize.STRING
+  },
+  cardAvail: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  },
+  sexCheck: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: null
+  },
+  dateOfBirth: {
+    type: Sequelize.DATEONLY
+  },
   salt: {
     type: Sequelize.STRING
   },
